@@ -260,23 +260,13 @@ document.addEventListener('keydown', event => {
   }
 });
 
-document.addEventListener('keydown', event => {
-  if (event.key === 'ArrowLeft') {
-    playerMove(-1);
-  } else if (event.key === 'ArrowRight') {
-    playerMove(1);
-  } else if (event.key === 'ArrowUp') {
-    playerDrop();
-  } else if (event.key === 'ArrowDown') {
-    playerRotate();
-  }
-});
-
 let touchStartX = 0;
 let touchStartY = 0;
 let touchStartTime = 0;
+let touchMoveDistanceY = 0;
+let touchMoveDistanceX = 0;
+let dropIntervalId = null;
 let moveDirection = 0;
-let moveDelay = 300;
 
 document.addEventListener('touchstart', event => {
   touchStartTime = Date.now();
@@ -287,28 +277,42 @@ document.addEventListener('touchstart', event => {
 
 document.addEventListener('touchmove', event => {
   const touch = event.touches[0];
-  const touchX = touch.pageX;
+  touchMoveDistanceX = touch.pageX - touchStartX;
+  touchMoveDistanceY = touch.pageY - touchStartY;
+  const screenHeight = window.innerHeight;
   const screenWidth = window.innerWidth;
 
-  if (touchX < screenWidth / 2 && moveDirection !== -1) {
-    moveDirection = -1;
-    movePlayer();
-  } else if (touchX >= screenWidth / 2 && moveDirection !== 1) {
-    moveDirection = 1;
-    movePlayer();
+  if (touchMoveDistanceY < -50) {
+    if (!dropIntervalId) {
+      dropIntervalId = setInterval(playerDrop, 50);
+    }
+  }
+
+  if (Math.abs(touchMoveDistanceX) > 20) {
+    if (touchMoveDistanceX < 0 && moveDirection !== -1) {
+      playerMove(-1);
+      moveDirection = -1;
+    } else if (touchMoveDistanceX > 0 && moveDirection !== 1) {
+      playerMove(1);
+      moveDirection = 1;
+    }
   }
 });
 
 document.addEventListener('touchend', event => {
-  clearInterval(moveInterval);
+  const touch = event.changedTouches[0];
+  const touchEndY = touch.pageY;
+  const touchEndX = touch.pageX;
+
+  if (Math.abs(touchEndX - touchStartX) < 20 && Math.abs(touchEndY - touchStartY) < 20) {
+    playerRotate();
+  }
+
+  if (dropIntervalId) {
+    clearInterval(dropIntervalId);
+    dropIntervalId = null;
+  }
+
   moveDirection = 0;
 });
 
-function movePlayer() {
-  if (moveDirection !== 0) {
-    playerMove(moveDirection);
-    setTimeout(() => {
-      movePlayer();
-    }, moveDelay);
-  }
-}
