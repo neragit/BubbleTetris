@@ -1,0 +1,88 @@
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600&display=swap');
+
+body {
+  font-family: 'Baloo 2', sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  flex-direction: column;
+  background-color: #121212;
+  color: white;
+  overflow: hidden;
+}
+
+h1 {
+  font-size: 3rem;
+  color: transparent;  /* text is transparent so the gradient shows */
+  background: linear-gradient(45deg, rgba(0, 206, 209, 1), rgba(73, 226, 226, 1), rgba(0, 226, 226, 1));
+  -webkit-background-clip: text; /* For Safari and other webkit browsers */
+  background-clip: text;  /* Standard background-clip for text */
+  padding: 5px;
+  margin: 0;
+  letter-spacing: 2px;
+  text-align: center;
+}
+
+#score {
+  margin-top: 1px;
+  padding: 10px;
+  font-size: 1.5rem;
+  text-align: center;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+canvas {
+  background-image: url('background.gif');
+  background-size: cover;
+  background-position: center;
+
+  max-width: 400px;
+  max-height: 500px;
+
+  position: relative;
+  display: block;
+  margin: 10px auto;  /* Centers the canvas horizontally */
+  border: 2px solid #00c4d1;
+  box-shadow: 0 0 15px rgba(0, 206, 209, 0.7);
+}
+
+#game-over-message, #start-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 30px;
+  border-radius: 10px;
+}
+
+#game-over-message p, #start-message p {
+  margin: 0;
+  font-size: 1em;
+}
+
+#game-over-message h1, #start-message h1 {
+  margin: 0;
+  font-size: 2em;
+}
+
+#game-over-message button, #start-message button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  margin: 15px;
+  border-radius: 30px;
+  cursor: pointer;
+}
+
+#game-over-message button:hover, #start-message button:hover {
+  background-color: #45a049;
+}
