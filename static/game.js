@@ -272,41 +272,59 @@ document.addEventListener('keydown', event => {
   }
 });
 
-let touchStartX = 0;
-let touchStartY = 0;
-let touchStartTime = 0;
+let moveInterval = null;
+let moveDirection = 0;
 
 document.addEventListener('touchstart', event => {
   touchStartTime = Date.now();
   const touch = event.touches[0];
-  touchStartX = touch.pageX;
   touchStartY = touch.pageY;
+  clearInterval(dropInterval);
 });
 
 document.addEventListener('touchmove', event => {
   const touch = event.touches[0];
-  const deltaX = touch.pageX - touchStartX;
-  const deltaY = touch.pageY - touchStartY;
+  const deltaY = touchStartY - touch.pageY;
 
-  if (Math.abs(deltaX) > Math.abs(deltaY)) {
-    if (deltaX > 0) {
-      playerMove(1);
-    } else {
-      playerMove(-1);
+  if (deltaY > 50) {
+    if (!dropInterval) {
+      dropInterval = setInterval(() => {
+        playerDrop();
+      }, 100);
+    }
+  }
+
+  const touchX = touch.pageX;
+  const screenWidth = window.innerWidth;
+
+  if (touchX < screenWidth / 2) {
+    if (moveDirection !== -1) {
+      clearInterval(moveInterval);
+      moveDirection = -1;
+      moveInterval = setInterval(() => {
+        playerMove(-1);
+      }, 200); // Move left every 200ms
+    }
+  } else {
+    if (moveDirection !== 1) {
+      clearInterval(moveInterval);
+      moveDirection = 1;
+      moveInterval = setInterval(() => {
+        playerMove(1);
+      }, 200); // Move right every 200ms
     }
   }
 });
 
 document.addEventListener('touchend', event => {
   const touchDuration = Date.now() - touchStartTime;
-
-  if (Math.abs(touchStartY - event.changedTouches[0].pageY) > 50) {
-    playerDrop();
-  }
+  clearInterval(dropInterval);
+  clearInterval(moveInterval);
 
   if (touchDuration < 500 && Math.abs(touchStartX - event.changedTouches[0].pageX) < 50) {
     playerRotate();
   }
-});
 
+  dropInterval = null;
+});
 
