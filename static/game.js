@@ -260,28 +260,53 @@ document.addEventListener('keydown', event => {
   }
 });
 
+document.addEventListener('keydown', event => {
+  if (event.key === 'ArrowLeft') {
+    playerMove(-1);
+  } else if (event.key === 'ArrowRight') {
+    playerMove(1);
+  } else if (event.key === 'ArrowUp') {
+    playerDrop();
+  } else if (event.key === 'ArrowDown') {
+    playerRotate();
+  }
+});
+
+let touchStartX = 0;
+let touchStartY = 0;
 let touchStartTime = 0;
 
 document.addEventListener('touchstart', event => {
   touchStartTime = Date.now();
   const touch = event.touches[0];
-  const screenWidth = window.innerWidth;
-  const touchX = touch.pageX;
+  touchStartX = touch.pageX;
+  touchStartY = touch.pageY;
+});
 
-  if (touchX < screenWidth / 2) {
-    playerMove(-1);
-  } else {
-    playerMove(1);
+document.addEventListener('touchmove', event => {
+  const touch = event.touches[0];
+  const deltaX = touch.pageX - touchStartX;
+  const deltaY = touch.pageY - touchStartY;
+
+  if (Math.abs(deltaX) > Math.abs(deltaY)) {
+    if (deltaX > 0) {
+      playerMove(1);
+    } else {
+      playerMove(-1);
+    }
   }
 });
 
 document.addEventListener('touchend', event => {
   const touchDuration = Date.now() - touchStartTime;
 
-  if (touchDuration < 500) {
-    playerRotate();
-  } else {
+  if (Math.abs(touchStartY - event.changedTouches[0].pageY) > 50) {
     playerDrop();
   }
+
+  if (touchDuration < 500 && Math.abs(touchStartX - event.changedTouches[0].pageX) < 50) {
+    playerRotate();
+  }
 });
+
 
