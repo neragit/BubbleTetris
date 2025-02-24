@@ -259,3 +259,29 @@ document.addEventListener('keydown', event => {
     playerRotate();
   }
 });
+
+let touchStartTime = 0;
+
+document.addEventListener('touchstart', event => {
+  touchStartTime = Date.now();
+  const touch = event.touches[0];
+  const screenWidth = window.innerWidth;
+  const touchX = touch.pageX;
+
+  if (touchX < screenWidth / 2) {
+    playerMove(-1);
+  } else {
+    playerMove(1);
+  }
+});
+
+document.addEventListener('touchend', event => {
+  const touchDuration = Date.now() - touchStartTime;
+
+  if (touchDuration < 500) {
+    playerRotate();
+  } else {
+    playerDrop();
+  }
+});
+
