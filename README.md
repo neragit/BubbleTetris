@@ -1,2 +1,2 @@
 # BubbleTetris
-Personal project
+Personal project // Experiment with the Tetris game // Zen
